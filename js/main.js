@@ -185,7 +185,7 @@ function crateUserName(accs) {
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
   currentAccount = accounts.find(
-    acc => acc.userName === inputLoginUsername.value
+    acc => acc.userName.toLowerCase() === inputLoginUsername.value.toLowerCase()
   );
   currentAccount?.pin + '' === inputLoginPin.value &&
     currentAccount.owner &&
