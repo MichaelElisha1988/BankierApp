@@ -78,7 +78,6 @@ nav {
   }
   .summary {
     width: 100%;
-    bottom: -15rem;
     position: absolute;
     align-items: baseline;
     grid-row: 5 / 6;
@@ -258,6 +257,9 @@ nav {
   padding: 0 0.3rem;
   margin-top: 1rem;
 }
+.summary__outcomes {
+  display: flex;
+}
 
 .summary__label {
   font-size: 1.2rem;
@@ -291,9 +293,10 @@ nav {
 
 /* OPERATIONS */
 .operation {
-  border-radius: 1rem;
+  border-radius: 3rem;
   padding: 3rem 4rem;
   color: #333;
+  height: 180px;
 }
 
 .operation--transfer {

@@ -51,6 +51,12 @@
           </p>
         </div>
         <p class="balance__value">0000₪</p>
+        <div class="summary__outcomes">
+          <p class="summary__label">In</p>
+          <p class="summary__value summary__value--in">0000₪</p>
+          <p class="summary__label">Out</p>
+          <p class="summary__value summary__value--out">0000₪</p>
+        </div>
       </div>
 
       <!-- MOVEMENTS -->
@@ -71,10 +77,6 @@
 
       <!-- SUMMARY -->
       <div class="summary">
-        <p class="summary__label">In</p>
-        <p class="summary__value summary__value--in">0000₪</p>
-        <p class="summary__label">Out</p>
-        <p class="summary__value summary__value--out">0000₪</p>
         <button class="btn--sort">&downarrow; SORT</button>
       </div>
 
@@ -83,6 +85,7 @@
         <ol class="carousel-indicators">
           <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
           <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
         </ol>
         <div class="carousel-inner">
           <div class="carousel-item active">
@@ -112,6 +115,17 @@
             </form>
           </div>
           </div>
+          <div class="carousel-item">
+            <div class="operation operation--loan">
+              <h2>Filter be Month</h2>
+              <label class="form__label form__label--loan">Enter Month number 1 - 12</label>
+              <form class="form form--loan">
+                <input type="number" class="form__input form__input--loan-amount" />
+                <button class="form__btn form__btn--loan">&rarr;</button>
+
+              </form>
+            </div>
+          </div>
         </div>
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -124,35 +138,8 @@
       </div>
 
 
-      <!-- OPERATION: LOAN -->
-      <!-- <div class="operation operation--loan">
-        <h2>Request loan</h2>
-        <form class="form form--loan">
-          <input type="number" class="form__input form__input--loan-amount" />
-          <button class="form__btn form__btn--loan">&rarr;</button>
-          <label class="form__label form__label--loan">Amount</label>
-        </form>
-      </div> -->
-
-      <!-- OPERATION: CLOSE -->
-      <!-- <div class="operation operation--close">
-        <h2>Close account</h2>
-        <form class="form form--close">
-          <input type="text" class="form__input form__input--user" />
-          <input
-            type="text"
-            maxlength="6"
-            class="form__input form__input--pin"
-          />
-          <button class="form__btn form__btn--close">&rarr;</button>
-          <label class="form__label">Confirm user</label>
-          <label class="form__label">Confirm PIN</label>
-        </form>
-      </div>
-    </main> -->
-
     <!-- <footer>
-      &copy; by Jonas Schmedtmann. Don't claim as your own :)
+      &copy; by Michaek Elisha.
     </footer> -->
 
     <script src="./js/main.js"></script>

@@ -1,10 +1,5 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-// Data
-
 const accounts = [];
 
 const initFirstData = async () => {
@@ -91,7 +86,6 @@ const updateDate = async (id, amount, date, cur, place) => {
     .catch(error => console.log('error', error));
 };
 
-// Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -121,19 +115,35 @@ initFirstData();
 crateUserName(accounts);
 let yourDate = new Date();
 let currentAccount;
-let sort = false;
+let sorted = false;
+let filtered = false;
+labelDate.textContent = yourDate.toString().slice(0, 16);
 
-const displayMovements = function (currentAccount, sort = false) {
+const displayMovements = function (currentAccount, sort = false, filter = '0') {
   const sortedmovementsData = currentAccount.movementsData
     .slice()
     .sort((a, b) => a.amount - b.amount);
 
+  const filteredMovmentsData = currentAccount.movementsData.filter(
+    item => item.date.slice(5, 7) === filter
+  );
+
   containerMovements.innerHTML = '';
   labelWelcome.textContent = `Welcome back, ${currentAccount.owner}`;
   containerApp.style.opacity = 1;
-  sort
-    ? addingRowsMovements(sortedmovementsData)
-    : addingRowsMovements(currentAccount.movementsData);
+
+  if (sorted && filtered) {
+    const filteredSortedMovmentsData = filteredMovmentsData
+      .slice()
+      .sort((a, b) => a.amount - b.amount);
+    addingRowsMovements(filteredSortedMovmentsData);
+  } else if (filtered && !sorted) {
+    addingRowsMovements(filteredMovmentsData);
+  } else {
+    sorted
+      ? addingRowsMovements(sortedmovementsData)
+      : addingRowsMovements(currentAccount.movementsData);
+  }
   calcDisplayBalance(currentAccount);
 };
 
@@ -268,24 +278,24 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = '';
 });
 
-// btnLoan.addEventListener('click', function (e) {
-//   e.preventDefault();
-//   const moneyRequest = Math.floor(inputLoanAmount.value);
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const monthSelected = inputLoanAmount.value;
+  inputLoanAmount.value ? (filtered = true) : (filtered = false);
 
-//   if (
-//     moneyRequest > 0 &&
-//     currentAccount.movements.some(mov => mov > moneyRequest * 0.1)
-//   )
-//     currentAccount.movements.push(moneyRequest);
-//   setTimeout(() => {
-//     displayMovements(currentAccount);
-//   }, 3000);
-// });
+  filtered
+    ? (btnSort.style.display = 'none')
+    : (btnSort.style.display = 'inline-block');
+
+  setTimeout(() => {
+    displayMovements(currentAccount, false, monthSelected);
+  }, 1000);
+});
 
 btnSort.addEventListener('click', function (e) {
-  sort = !sort;
+  sorted = !sorted;
   e.preventDefault();
-  displayMovements(currentAccount, sort);
+  displayMovements(currentAccount, sorted);
 });
 
 const currencies = new Map([
