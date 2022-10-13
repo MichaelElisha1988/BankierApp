@@ -144,7 +144,10 @@ function addingRowsMovements(movementsData) {
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
-    } ${type} - ${mov.date} - ${mov.place} - ${mov.owner} </div>
+    } ${type} </div>
+        <div class="movements__type movements__type--${type}">${mov.date}</div>
+        <div class="movements__type movements__type--${type}">${mov.place}</div>
+        <div class="movements__type movements__type--${type}">${mov.owner}</div>
         <div class="movements__value">${mov.amount.toFixed(2)}₪</div>
       </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', htmlMovementRow);
