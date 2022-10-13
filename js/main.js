@@ -201,7 +201,8 @@ btnLogin.addEventListener('click', function (e) {
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = +inputTransferAmount.value;
+  const amount =
+    +inputClosePin.value > 0 ? +inputClosePin.value : -+inputClosePin.value;
   const place = inputTransferTo.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
@@ -234,7 +235,8 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = +inputClosePin.value;
+  const amount =
+    +inputClosePin.value < 0 ? +inputClosePin.value : -+inputClosePin.value;
   const place = inputCloseUsername.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
