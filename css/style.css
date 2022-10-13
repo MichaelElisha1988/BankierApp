@@ -18,7 +18,7 @@ html {
 body {
   font-family: 'Poppins', sans-serif;
   color: #444;
-  background-color: #e5e5e5;
+  background-color: #fcf6f5ff;
   height: 100vh;
   padding: 2rem;
 }
@@ -68,7 +68,7 @@ nav {
   }
   .movements {
     grid-row: 2 / span 3;
-    background-color: #fff;
+    background-color: #fcf6f5ff;
     border-radius: 4rem;
     overflow: scroll;
     width: 100%;
@@ -300,15 +300,15 @@ nav {
 }
 
 .operation--transfer {
-  background-image: linear-gradient(to top left, #ffb003, #ffcb03);
+  background-image: linear-gradient(to top left, #8aaae5, #ffffff);
 }
 
 .operation--loan {
-  background-image: linear-gradient(to top left, #39b385, #9be15d);
+  background-image: linear-gradient(to top left, #39b385, #ffffff);
 }
 
 .operation--close {
-  background-image: linear-gradient(to top left, #e52a5a, #ff585f);
+  background-image: linear-gradient(to top left, rgb(176, 98, 107), #ffffff);
 }
 
 h2 {
@@ -361,9 +361,14 @@ h2 {
   border: none;
   border-radius: 0.7rem;
   font-size: 1.8rem;
-  background-color: #fff;
+  background-color: rgb(218, 218, 218);
   cursor: pointer;
   transition: all 0.3s;
+  opacity: 0.4;
+}
+.form__btn span {
+  opacity: 1;
+  padding-top: 5px;
 }
 
 .form__btn:focus {
