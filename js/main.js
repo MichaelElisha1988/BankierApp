@@ -203,7 +203,7 @@ btnTransfer.addEventListener('click', function (e) {
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
   if (amountAfterTransfer > -20000) {
-    currentAccount.map(acc => acc.movements.push(amount));
+    accounts.map(acc => acc.movements.push(amount));
     updateDate(
       currentAccount.movements.length + 1,
       amount,
