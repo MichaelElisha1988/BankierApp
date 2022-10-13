@@ -6,6 +6,7 @@
 // Data
 
 const accounts = [];
+
 const initFirstData = async () => {
   const accountsResponse = await fetch(
     'https://api.tadabase.io/api/v1/data-tables/3GDN1mNeqP/records',
@@ -202,7 +203,7 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount =
-    +inputClosePin.value > 0 ? +inputClosePin.value : -+inputClosePin.value;
+    +inputClosePin.value > 0 ? +inputClosePin.value : -1 * +inputClosePin.value;
   const place = inputTransferTo.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
@@ -236,7 +237,7 @@ btnTransfer.addEventListener('click', function (e) {
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   const amount =
-    +inputClosePin.value < 0 ? +inputClosePin.value : -+inputClosePin.value;
+    +inputClosePin.value < 0 ? +inputClosePin.value : -1 * +inputClosePin.value;
   const place = inputCloseUsername.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
@@ -287,97 +288,8 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount, sort);
 });
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
 const currencies = new Map([
   ['USD', 'United States dollar'],
   ['EUR', 'Euro'],
   ['GBP', 'Pound sterling'],
 ]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////// End Array Section //////////////////////////////////
-
-// const a = Array.from({ length: 100 }, () =>
-//   Math.floor(Math.random() * 100000000 * 3)
-// );
-// console.log(a);
-
-// const dogs = [
-//   {
-//     weight: 22,
-//     curFood: 250,
-//     owners: ['Alice', 'Bob'],
-//   },
-//   {
-//     weight: 8,
-//     curFood: 200,
-//     owners: ['Matilda'],
-//   },
-//   {
-//     weight: 13,
-//     curFood: 275,
-//     owners: ['Sarah', 'John'],
-//   },
-//   {
-//     weight: 32,
-//     curFood: 340,
-//     owners: ['Michael'],
-//   },
-// ];
-
-// const calcRecommendedFood = function (dogs) {
-//   dogs.forEach(dog => {
-//     dog.recommendedFood = Math.trunc(dog.weight ** 0.75 * 28);
-//   });
-// };
-// calcRecommendedFood(dogs);
-// console.log(dogs);
-
-// const whosThisDog = function (dogs, name) {
-//   let dogFinder;
-//   dogs.map(dog =>
-//     dog.owners.map(owner => {
-//       if (owner.toLowerCase() === name.toLowerCase()) dogFinder = dog;
-//     })
-//   );
-//   return dogFinder;
-// };
-
-// let dogOwners = whosThisDog(dogs, 'Sarah');
-// console.log(dogOwners);
-
-// dogOwners.curFood * 1.1 > dogOwners.recommendedFood
-//   ? console.log(`${dogOwners.owners} Youre dog too fat!`)
-//   : '' || dogOwners.curFood * 0.9 < dogOwners.recommendedFood
-//   ? console.log(`${dogOwners.owners} Feed youre dog man`)
-//   : '';
-
-// const ownersEatToMachFood = dogs
-//   .filter(dog => dog.curFood * 1.1 > dog.recommendedFood)
-//   .flatMap(dog => dog.owners);
-
-// const ownersEatToLittleFood = dogs
-//   .filter(dog => dog.curFood * 0.9 < dog.recommendedFood)
-//   .flatMap(dog => dog.owners);
-
-// console.log(`${ownersEatToMachFood.join(' and ')}'s dogs are eating a lot!`);
-// console.log(
-//   `${ownersEatToLittleFood.join(' and ')}'s dogs are eating to little!`
-// );
-// const dogsWithOKFood = dog =>
-//   dog.curFood <= dog.recommendedFood * 1.1 &&
-//   dog.curFood >= dog.recommendedFood * 0.9;
-
-// console.log(dogs.some(dog => dog.curFood === dog.recommendedFood));
-// console.log(dogs.some(dogsWithOKFood));
-
-// console.log(dogs.filter(dogsWithOKFood));
-
-// const sortedDogs = dogs
-//   .slice()
-//   .sort((a, b) => a.recommendedFood - b.recommendedFood);
-// console.log(sortedDogs);
