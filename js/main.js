@@ -6,7 +6,7 @@
 // Data
 
 const accounts = [];
-const userAction = async () => {
+const initFirstData = async () => {
   const accountsResponse = await fetch(
     'https://api.tadabase.io/api/v1/data-tables/3GDN1mNeqP/records',
     {
@@ -34,6 +34,7 @@ const userAction = async () => {
   const myAccountsJson = await accountsResponse.json(); //extract JSON from the http response
   const myMovemntsJson = await movemontsResponse.json(); //extract JSON from the http response
   // do something with myJson
+
   myAccountsJson.items.map(item =>
     accounts.push({
       Id: item.field_123,
@@ -42,9 +43,51 @@ const userAction = async () => {
       pin: item.field_125,
       owner: item.field_124,
       movements: myMovemntsJson.items.map(item => item.field_128),
+      movementsData: myMovemntsJson.items.map(item => {
+        return {
+          amount: item.field_128,
+          place: item.field_131,
+          date: item.field_129,
+          unique: item.id,
+          owner: item.field_130,
+        };
+      }),
     })
   );
   console.log(accounts);
+};
+
+const updateDate = async (id, amount, date, cur, place) => {
+  var myHeaders = new Headers();
+  myHeaders.append('X-Tadabase-App-id', '4yQk2BBNgP');
+  myHeaders.append('X-Tadabase-App-Key', 't5JcK3KU0HXt');
+  myHeaders.append('X-Tadabase-App-Secret', 'y1yAri1CJn2MufPtTIybJebdBB0GwLEn');
+  myHeaders.append(
+    'Cookie',
+    'AWSALB=4Wx7eZaUHgK1e4n3pEPwkHBI1PVV6iiTZV8DZzUtm7x/OWosRaJ/CPKOKGNtm0j6+CYmDOOMFxgCRWYCSxltDdaLQMbFb5QVXgaazncbkmMFDCz/qow8+cxkDPnL; AWSALBCORS=4Wx7eZaUHgK1e4n3pEPwkHBI1PVV6iiTZV8DZzUtm7x/OWosRaJ/CPKOKGNtm0j6+CYmDOOMFxgCRWYCSxltDdaLQMbFb5QVXgaazncbkmMFDCz/qow8+cxkDPnL'
+  );
+
+  var formdata = new FormData();
+  formdata.append('field_127', id);
+  formdata.append('field_128', amount);
+  formdata.append('field_129', date);
+  formdata.append('field_130', cur.owner);
+  formdata.append('field_131', place);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: formdata,
+    redirect: 'follow',
+  };
+
+  fetch(
+    'https://api.tadabase.io/api/v1/data-tables/X9EjVXNo2K/records',
+    requestOptions
+  )
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
 };
 
 // Elements
@@ -73,35 +116,36 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-userAction();
+initFirstData();
 crateUserName(accounts);
+let yourDate = new Date();
 let currentAccount;
 let sort = false;
 
 const displayMovements = function (currentAccount, sort = false) {
-  const sortedmovements = currentAccount.movements
+  const sortedmovementsData = currentAccount.movementsData
     .slice()
-    .sort((a, b) => a - b);
+    .sort((a, b) => a.amount - b.amount);
 
   containerMovements.innerHTML = '';
   labelWelcome.textContent = `Welcome back, ${currentAccount.owner}`;
   containerApp.style.opacity = 1;
   sort
-    ? addingRowsMovements(sortedmovements)
-    : addingRowsMovements(currentAccount.movements);
+    ? addingRowsMovements(sortedmovementsData)
+    : addingRowsMovements(currentAccount.movementsData);
   calcDisplayBalance(currentAccount);
 };
 
-function addingRowsMovements(movements) {
-  movements.forEach((mov, i) => {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
+function addingRowsMovements(movementsData) {
+  movementsData.forEach((mov, i) => {
+    const type = mov.amount > 0 ? 'deposit' : 'withdrawal';
 
     const htmlMovementRow = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
-    } ${type}</div>
-        <div class="movements__value">${mov.toFixed(2)}₪</div>
+    } ${type} - ${mov.date} - ${mov.place} - ${mov.owner} </div>
+        <div class="movements__value">${mov.amount.toFixed(2)}₪</div>
       </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', htmlMovementRow);
   });
@@ -125,7 +169,6 @@ function calcDisplaySummary(currentAccount) {
 
   labelSumIn.textContent = deposit.toFixed(2) + '₪';
   labelSumOut.textContent = Math.abs(withdrawal).toFixed(2) + '₪';
-  labelSumInterest.textContent = interest.toFixed(2) + '₪';
 }
 
 function crateUserName(accs) {
@@ -155,18 +198,18 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = +inputTransferAmount.value;
+  const place = inputTransferTo.value;
+  console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
-  const transferToAccount = accounts.find(
-    acc => acc.userName === inputTransferTo.value
-  );
-  if (
-    transferToAccount &&
-    amount > 0 &&
-    amountAfterTransfer > -2000 &&
-    currentAccount.userName !== transferToAccount?.userName
-  ) {
-    currentAccount.movements.push(-amount);
-    transferToAccount?.movements.push(amount);
+  if (amountAfterTransfer > -20000) {
+    currentAccount.map(acc => acc.movements.push(amount));
+    updateDate(
+      currentAccount.movements.length + 1,
+      amount,
+      yourDate.toISOString().split('T')[0],
+      currentAccount,
+      place
+    );
     setTimeout(() => {
       displayMovements(currentAccount);
     }, 3000);
