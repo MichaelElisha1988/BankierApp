@@ -202,8 +202,16 @@ btnTransfer.addEventListener('click', function (e) {
   const place = inputTransferTo.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
+  const newMoveData = {
+    id: currentAccount.movements.length + 1,
+    amount: amount,
+    date: yourDate.toISOString().split('T')[0],
+    owner: currentAccount.owner,
+    place: place,
+  };
   if (amountAfterTransfer > -20000) {
     accounts.map(acc => acc.movements.push(amount));
+    accounts.map(acc => acc.movementsData.push(newMoveData));
     updateDate(
       currentAccount.movements.length + 1,
       amount,
