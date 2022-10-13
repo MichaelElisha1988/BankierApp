@@ -49,10 +49,14 @@ nav {
     transition: all 1s;
     width: 90%;
   }
-  .operation--transfer {
+  .carousel {
     position: absolute;
-    top: -20rem;
     width: 100%;
+    top: -20rem;
+  }
+  .carousel-control-next-icon,
+  .carousel-control-prev-icon {
+    display: none;
   }
   .balance {
     grid-column: 1 / span 2;
@@ -74,7 +78,7 @@ nav {
   }
   .summary {
     width: 100%;
-    bottom: -8rem;
+    bottom: -15rem;
     position: absolute;
     align-items: baseline;
     grid-row: 5 / 6;

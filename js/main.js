@@ -212,7 +212,7 @@ btnTransfer.addEventListener('click', function (e) {
     owner: currentAccount.owner,
     place: place,
   };
-  if (amountAfterTransfer > -20000) {
+  if (amount > 0) {
     accounts.map(acc => acc.movements.push(amount));
     accounts.map(acc => acc.movementsData.push(newMoveData));
     updateDate(
@@ -232,24 +232,38 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferAmount.value = '';
 });
 
-// btnClose.addEventListener('click', function (e) {
-//   e.preventDefault();
-//   const toDeleteUserName = inputCloseUsername.value;
-//   const toDeletePin = +inputClosePin.value;
-//   const toDeleteIndex = accounts?.findIndex(
-//     acc => acc.userName === toDeleteUserName
-//   );
-//   if (
-//     currentAccount.userName === toDeleteUserName &&
-//     currentAccount.pin === toDeletePin
-//   ) {
-//     accounts.splice(toDeleteIndex, 1);
-//     containerApp.style.opacity = 0;
-//     labelWelcome.textContent = `Log in to get started`;
-//   } else {
-//     alert('Invalid Delete request');
-//   }
-// });
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = +inputClosePin.value;
+  const place = inputCloseUsername.value;
+  console.log();
+  const amountAfterTransfer = currentAccount.balenceAmount - amount;
+  const newMoveData = {
+    id: currentAccount.movements.length + 1,
+    amount: amount,
+    date: yourDate.toISOString().split('T')[0],
+    owner: currentAccount.owner,
+    place: place,
+  };
+  if (amount < 0 && amountAfterTransfer > -20000) {
+    accounts.map(acc => acc.movements.push(amount));
+    accounts.map(acc => acc.movementsData.push(newMoveData));
+    updateDate(
+      currentAccount.movements.length + 1,
+      amount,
+      yourDate.toISOString().split('T')[0],
+      currentAccount,
+      place
+    );
+    setTimeout(() => {
+      displayMovements(currentAccount);
+    }, 3000);
+  } else {
+    alert('Invalid Transfer');
+  }
+  inputClosePin.value = '';
+  inputCloseUsername.value = '';
+});
 
 // btnLoan.addEventListener('click', function (e) {
 //   e.preventDefault();
