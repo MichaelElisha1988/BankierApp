@@ -168,6 +168,7 @@ function calcDisplaySummary(currentAccount) {
     .reduce((acc, mov) => acc + mov);
 
   labelSumIn.textContent = deposit.toFixed(2) + '₪';
+
   labelSumOut.textContent = Math.abs(withdrawal).toFixed(2) + '₪';
 }
 
