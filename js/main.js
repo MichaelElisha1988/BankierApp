@@ -221,38 +221,38 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferAmount.value = '';
 });
 
-btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
-  const toDeleteUserName = inputCloseUsername.value;
-  const toDeletePin = +inputClosePin.value;
-  const toDeleteIndex = accounts?.findIndex(
-    acc => acc.userName === toDeleteUserName
-  );
-  if (
-    currentAccount.userName === toDeleteUserName &&
-    currentAccount.pin === toDeletePin
-  ) {
-    accounts.splice(toDeleteIndex, 1);
-    containerApp.style.opacity = 0;
-    labelWelcome.textContent = `Log in to get started`;
-  } else {
-    alert('Invalid Delete request');
-  }
-});
+// btnClose.addEventListener('click', function (e) {
+//   e.preventDefault();
+//   const toDeleteUserName = inputCloseUsername.value;
+//   const toDeletePin = +inputClosePin.value;
+//   const toDeleteIndex = accounts?.findIndex(
+//     acc => acc.userName === toDeleteUserName
+//   );
+//   if (
+//     currentAccount.userName === toDeleteUserName &&
+//     currentAccount.pin === toDeletePin
+//   ) {
+//     accounts.splice(toDeleteIndex, 1);
+//     containerApp.style.opacity = 0;
+//     labelWelcome.textContent = `Log in to get started`;
+//   } else {
+//     alert('Invalid Delete request');
+//   }
+// });
 
-btnLoan.addEventListener('click', function (e) {
-  e.preventDefault();
-  const moneyRequest = Math.floor(inputLoanAmount.value);
+// btnLoan.addEventListener('click', function (e) {
+//   e.preventDefault();
+//   const moneyRequest = Math.floor(inputLoanAmount.value);
 
-  if (
-    moneyRequest > 0 &&
-    currentAccount.movements.some(mov => mov > moneyRequest * 0.1)
-  )
-    currentAccount.movements.push(moneyRequest);
-  setTimeout(() => {
-    displayMovements(currentAccount);
-  }, 3000);
-});
+//   if (
+//     moneyRequest > 0 &&
+//     currentAccount.movements.some(mov => mov > moneyRequest * 0.1)
+//   )
+//     currentAccount.movements.push(moneyRequest);
+//   setTimeout(() => {
+//     displayMovements(currentAccount);
+//   }, 3000);
+// });
 
 btnSort.addEventListener('click', function (e) {
   sort = !sort;
