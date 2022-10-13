@@ -43,7 +43,7 @@ nav {
   }
   .app {
     position: absolute !important;
-    margin: 25rem auto !important;
+    margin: 22rem auto !important;
     justify-content: center;
     opacity: 0;
     transition: all 1s;
@@ -124,7 +124,6 @@ nav {
 
 .login__input {
   border: none;
-  padding: 0.5rem 2rem;
   font-size: 1.6rem;
   font-family: inherit;
   text-align: center;
@@ -210,9 +209,10 @@ nav {
 }
 
 .movements__row {
-  padding: 1rem 0.5rem;
+  padding: 1rem 1.5rem;
   display: block;
   align-items: center;
+  justify-content: center;
   text-align: center;
   border-bottom: 1px solid #eee;
 }
@@ -237,11 +237,13 @@ nav {
 .movements__type--deposit {
   background-image: linear-gradient(to top left, #39b385, #9be15d);
   margin-bottom: 3px;
+  margin-left: 25px;
 }
 
 .movements__type--withdrawal {
   background-image: linear-gradient(to top left, #e52a5a, #ff585f);
   margin-bottom: 3px;
+  margin-left: 25px;
 }
 
 .movements__value {

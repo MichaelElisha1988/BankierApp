@@ -1,6 +1,24 @@
 'use strict';
 
-const accounts = [];
+const accounts = [
+  {
+    Id: 8,
+    unique: 'item.id',
+    userName: 'me',
+    pin: 9999,
+    owner: 'Michael Elisha',
+    movements: [1, 2, 3],
+    movementsData: [
+      {
+        amount: 1,
+        place: 'item.field_131',
+        date: 'item.field_129',
+        unique: 'item.id',
+        owner: 'Michael Elisha',
+      },
+    ],
+  },
+];
 
 const initFirstData = async () => {
   const accountsResponse = await fetch(
@@ -34,13 +52,14 @@ const initFirstData = async () => {
   myAccountsJson.items.map(item =>
     accounts.push({
       Id: item.field_123,
-      Unique: item.id,
+      unique: item.id,
       userName: item.field_126,
       pin: item.field_125,
       owner: item.field_124,
       movements: myMovemntsJson.items.map(item => item.field_128),
       movementsData: myMovemntsJson.items.map(item => {
         return {
+          Id: item.field_128,
           amount: item.field_128,
           place: item.field_131,
           date: item.field_129,
@@ -86,6 +105,31 @@ const updateDate = async (id, amount, date, cur, place) => {
     .catch(error => console.log('error', error));
 };
 
+const toDelete = async uniqueID => {
+  var myHeaders = new Headers();
+  myHeaders.append('X-Tadabase-App-id', '4yQk2BBNgP');
+  myHeaders.append('X-Tadabase-App-Key', 't5JcK3KU0HXt');
+  myHeaders.append('X-Tadabase-App-Secret', 'y1yAri1CJn2MufPtTIybJebdBB0GwLEn');
+
+  var formdata = new FormData();
+  formdata.append('id', uniqueID);
+
+  var requestOptions = {
+    method: 'DELETE',
+    headers: myHeaders,
+    body: formdata,
+    redirect: 'follow',
+  };
+
+  fetch(
+    `https://api.tadabase.io/api/v1/data-tables/X9EjVXNo2K/records/${uniqueID}`,
+    requestOptions
+  )
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+};
+
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -117,7 +161,12 @@ let yourDate = new Date();
 let currentAccount;
 let sorted = false;
 let filtered = false;
-labelDate.textContent = yourDate.toString().slice(0, 16);
+let btnDelete;
+let indexOfDelete;
+setInterval(counter => {
+  yourDate = new Date();
+  labelDate.textContent = yourDate.toString().slice(0, 25);
+}, 1000);
 
 const displayMovements = function (currentAccount, sort = false, filter = '0') {
   const sortedmovementsData = currentAccount.movementsData
@@ -157,9 +206,31 @@ function addingRowsMovements(movementsData) {
       mov.owner
     }</div>
         <div class="movements__type movements__type--${type}">${mov.place}</div>
-        <div class="movements__value">${mov.amount.toFixed(2)}₪</div>
-      </div>`;
+        <div class="movements__value">${mov.amount.toFixed(2)}₪ 
+        <button class="form__btn form__btn--delete" value="${
+          mov.unique
+        }"><span class="material-symbols-outlined">
+        heart_minus
+        </span></button>
+      </div>
+      `;
     containerMovements.insertAdjacentHTML('afterbegin', htmlMovementRow);
+  });
+
+  btnDelete = document.querySelectorAll('.form__btn--delete');
+  btnDelete.forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      console.log(this);
+      currentAccount.movementsData
+        .map(mov => mov.unique)
+        .filter((unique, i) => {
+          unique === this.value;
+          indexOfDelete = i;
+        });
+      toDelete(this.value);
+      initFirstData();
+    });
   });
 }
 
@@ -210,13 +281,22 @@ btnLogin.addEventListener('click', function (e) {
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
+  let yourDate = new Date();
+  let indexNew = [...yourDate.toString()];
+
+  let uniqueId = indexNew
+    .map(letter => letter)
+    .filter(letter => +letter)
+    .reduce((cur, num) => (cur = cur + num));
+
   const amount =
-    +inputClosePin.value > 0 ? +inputClosePin.value : -1 * +inputClosePin.value;
+    +inputTransferAmount.value > 0
+      ? +inputTransferAmount.value
+      : -1 * inputTransferAmount.value;
   const place = inputTransferTo.value;
-  console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
   const newMoveData = {
-    id: currentAccount.movements.length + 1,
+    id: uniqueId,
     amount: amount,
     date: yourDate.toISOString().split('T')[0],
     owner: currentAccount.owner,
@@ -226,7 +306,7 @@ btnTransfer.addEventListener('click', function (e) {
     accounts.map(acc => acc.movements.push(amount));
     accounts.map(acc => acc.movementsData.push(newMoveData));
     updateDate(
-      currentAccount.movements.length + 1,
+      uniqueId,
       amount,
       yourDate.toISOString().split('T')[0],
       currentAccount,
@@ -244,13 +324,23 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
+  let yourDate = new Date();
+  let indexNew = [...yourDate.toString];
+
+  let uniqueId = indexNew
+    .map(letter => letter)
+    .filter(letter => +letter)
+    .reduce((cur, num) => (cur = cur + num));
+
+  console.log(uniqueId);
+
   const amount =
     +inputClosePin.value < 0 ? +inputClosePin.value : -1 * +inputClosePin.value;
   const place = inputCloseUsername.value;
   console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
   const newMoveData = {
-    id: currentAccount.movements.length + 1,
+    id: uniqueId,
     amount: amount,
     date: yourDate.toISOString().split('T')[0],
     owner: currentAccount.owner,
@@ -260,7 +350,7 @@ btnClose.addEventListener('click', function (e) {
     accounts.map(acc => acc.movements.push(amount));
     accounts.map(acc => acc.movementsData.push(newMoveData));
     updateDate(
-      currentAccount.movements.length + 1,
+      uniqueId,
       amount,
       yourDate.toISOString().split('T')[0],
       currentAccount,
