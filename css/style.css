@@ -18,7 +18,7 @@ html {
 body {
   font-family: 'Poppins', sans-serif;
   color: #444;
-  background-color: #b5b5b5;
+  background-color: #e5e5e5;
   height: 100vh;
   padding: 2rem;
 }
@@ -208,8 +208,9 @@ nav {
 
 .movements__row {
   padding: 2.25rem 4rem;
-  display: flex;
+  display: block;
   align-items: center;
+  text-align: center;
   border-bottom: 1px solid #eee;
 }
 
@@ -232,10 +233,12 @@ nav {
 
 .movements__type--deposit {
   background-image: linear-gradient(to top left, #39b385, #9be15d);
+  margin-bottom: 3px;
 }
 
 .movements__type--withdrawal {
   background-image: linear-gradient(to top left, #e52a5a, #ff585f);
+  margin-bottom: 3px;
 }
 
 .movements__value {
