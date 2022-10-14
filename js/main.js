@@ -229,15 +229,15 @@ function addingRowsMovements(movementsData) {
         .indexOf(this.value);
 
       currentAccount.movementsData.splice(indexOfDelete, 1);
+      currentAccount.movements.splice(indexOfDelete, 1);
 
       // console.log(currentAccount.movementsData);
+
+      toDelete(this.value);
 
       setTimeout(() => {
         displayMovements(currentAccount);
       }, 1000);
-
-      toDelete(this.value);
-      calcDisplayBalance(currentAccount);
     });
   });
 }
