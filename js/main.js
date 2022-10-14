@@ -237,6 +237,7 @@ function addingRowsMovements(movementsData) {
       }, 1000);
 
       toDelete(this.value);
+      calcDisplayBalance(currentAccount);
     });
   });
 }
