@@ -1,23 +1,23 @@
 'use strict';
 
 const accounts = [
-  {
-    Id: 8,
-    unique: 'item.id',
-    userName: 'me',
-    pin: 9999,
-    owner: 'Michael Elisha',
-    movements: [1, 2, 3],
-    movementsData: [
-      {
-        amount: 1,
-        place: 'item.field_131',
-        date: 'item.field_129',
-        unique: 'item.id',
-        owner: 'Michael Elisha',
-      },
-    ],
-  },
+  // {
+  //   Id: 8,
+  //   unique: 'item.id',
+  //   userName: 'me',
+  //   pin: 9999,
+  //   owner: 'Michael Elisha',
+  //   movements: [1, 2, 3],
+  //   movementsData: [
+  //     {
+  //       amount: 1,
+  //       place: 'item.field_131',
+  //       date: 'item.field_129',
+  //       unique: 'item.id',
+  //       owner: 'Michael Elisha',
+  //     },
+  //   ],
+  // },
 ];
 
 const initFirstData = async () => {
@@ -51,7 +51,7 @@ const initFirstData = async () => {
 
   myAccountsJson.items.map(item =>
     accounts.push({
-      Id: item.field_123,
+      number: item.field_123,
       unique: item.id,
       userName: item.field_126,
       pin: item.field_125,
@@ -59,7 +59,7 @@ const initFirstData = async () => {
       movements: myMovemntsJson.items.map(item => item.field_128),
       movementsData: myMovemntsJson.items.map(item => {
         return {
-          Id: item.field_128,
+          number: item.field_127,
           amount: item.field_128,
           place: item.field_131,
           date: item.field_129,
@@ -128,6 +128,8 @@ const toDelete = async uniqueID => {
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
+
+  initFirstData();
 };
 
 const labelWelcome = document.querySelector('.welcome');
@@ -221,15 +223,20 @@ function addingRowsMovements(movementsData) {
   btnDelete.forEach(btn => {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
-      console.log(this);
-      currentAccount.movementsData
+
+      indexOfDelete = currentAccount.movementsData
         .map(mov => mov.unique)
-        .filter((unique, i) => {
-          unique === this.value;
-          indexOfDelete = i;
-        });
+        .indexOf(this.value);
+
+      currentAccount.movementsData.splice(indexOfDelete, 1);
+
+      // console.log(currentAccount.movementsData);
+
+      setTimeout(() => {
+        displayMovements(currentAccount);
+      }, 1000);
+
       toDelete(this.value);
-      initFirstData();
     });
   });
 }
@@ -314,7 +321,7 @@ btnTransfer.addEventListener('click', function (e) {
     );
     setTimeout(() => {
       displayMovements(currentAccount);
-    }, 3000);
+    }, 1000);
   } else {
     alert('Invalid Transfer');
   }
@@ -325,7 +332,7 @@ btnTransfer.addEventListener('click', function (e) {
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   let yourDate = new Date();
-  let indexNew = [...yourDate.toString];
+  let indexNew = [...yourDate.toString()];
 
   let uniqueId = indexNew
     .map(letter => letter)
