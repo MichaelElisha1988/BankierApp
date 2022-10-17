@@ -47,7 +47,6 @@ const initFirstData = async () => {
   );
   const myAccountsJson = await accountsResponse.json(); //extract JSON from the http response
   const myMovemntsJson = await movemontsResponse.json(); //extract JSON from the http response
-  // do something with myJson
 
   myAccountsJson.items.map(item =>
     accounts.push({
