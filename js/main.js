@@ -180,7 +180,7 @@ const displayMovements = function (currentAccount, sort = false, filter = '0') {
 
   containerMovements.innerHTML = '';
   labelWelcome.textContent = `Welcome back, ${currentAccount.owner}`;
-  containerApp.style.opacity = 1;
+  containerApp.style.display = 'grid';
 
   if (sorted && filtered) {
     const filteredSortedMovmentsData = filteredMovmentsData

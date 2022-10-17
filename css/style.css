@@ -166,13 +166,13 @@ nav {
   position: relative;
   max-width: 100rem;
   margin: 4rem auto;
-  display: grid;
   grid-template-columns: 4fr 3fr;
   grid-template-rows: auto repeat(3, 15rem) auto;
   gap: 2rem;
 
   /* NOTE This creates the fade in/out anumation */
-  opacity: 0;
+  display: none;
+  opacity: 1;
   transition: all 1s;
 }
 
@@ -261,6 +261,7 @@ nav {
 }
 .summary__outcomes {
   display: flex;
+  justify-content: center;
 }
 
 .summary__label {
@@ -312,6 +313,9 @@ nav {
 .operation--close {
   background-image: linear-gradient(to top left, rgb(176, 98, 107), #ffffff);
 }
+.operation--future_bills {
+  background-image: linear-gradient(to top left, rgb(176, 155, 98), #ffffff);
+}
 
 h2 {
   margin-bottom: 1.5rem;
@@ -334,6 +338,11 @@ h2 {
 .form__label--loan {
   grid-row: 2;
 }
+
+.form.form--future_bills {
+  grid-template-columns: 0.5fr 0.5fr 2fr;
+}
+
 /* End exceptions */
 
 .form__input {
@@ -368,6 +377,13 @@ h2 {
   transition: all 0.3s;
   opacity: 0.4;
 }
+
+.form__btn--future_bills {
+  position: absolute;
+  right: 1rem;
+  height: 7rem;
+}
+
 .form__btn span {
   opacity: 1;
   padding-top: 5px;

@@ -61,7 +61,19 @@
           <p class="summary__label">Out</p>
           <p class="summary__value summary__value--out">0000₪</p>
         </div>
+        <div class="future_bills--label">
+          <p class="balance__label">Future Bills Amount</p>
+          <p class="balance__value">0000₪
+            <button class="form__btn form__btn--learn_more"><span class="material-symbols-outlined">
+              saved_search
+              </span></button>
+
+          </p>
+
+        </div>
       </div>
+
+
 
       <!-- MOVEMENTS -->
       <div class="movements">
@@ -73,7 +85,6 @@
             heart_minus
           </span></button>
         </div>
-
       </div>
 
       <!-- SUMMARY -->
@@ -84,17 +95,19 @@
       <!-- OPERATION: TRANSFERS -->
       <div id="carouselExampleIndicators" data-interval="false" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
-          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="0"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1" class="active"></li>
           <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
         </ol>
         <div class="carousel-inner">
-          <div class="carousel-item active">
+          <div class="carousel-item">
             <div class="operation operation--transfer">
               <h2>Add Bank Deposit Movemant</h2>
               <form class="form form--transfer">
-                <input type="text" class="form__input form__input--to" />
                 <input type="number" class="form__input form__input--amount" />
+                <input type="text" class="form__input form__input--to" />
+
                 <button class="form__btn form__btn--transfer"><span class="material-symbols-outlined">
                   savings
                   </span></button>
@@ -104,15 +117,16 @@
               </form>
             </div>
           </div>
-          <div class="carousel-item">
+          <div class="carousel-item active">
           <div class="operation operation--close">
             <h2>Add Bank Withdrawal Movemant</h2>
             <form class="form form--close">
-              <input type="text" class="form__input form__input--user" />
               <input
-                type="number"
-                class="form__input form__input--pin"
-              />
+              type="number"
+              class="form__input form__input--pin"
+            />
+              <input type="text" class="form__input form__input--user" />
+
               <button class="form__btn form__btn--close"><span class="material-symbols-outlined">
                 add_shopping_cart
                 </span></button>
@@ -122,6 +136,29 @@
             </form>
           </div>
           </div>
+          <div class="carousel-item">
+            <div class="operation operation--future_bills">
+              <h2>Add Bank Future Bills</h2>
+
+              <form class="form form--future_bills">
+                <input
+                type="number"
+                class="form__input form__input--future_bills_amount"
+              />
+                <input type="text" class="form__input form__input--future_bills_Number" />
+                <input type="text" class="form__input form__input--future_bills_name" />
+
+
+                <label class="form__label">Amount</label>
+                <label class="form__label">Payments No.</label>
+                <label class="form__label">Place</label>
+                <button class="form__btn form__btn--future_bills"><span class="material-symbols-outlined">
+                  credit_card
+                  </span></button>
+  
+              </form>
+            </div>
+            </div>
           <div class="carousel-item">
             <div class="operation operation--loan">
               <h2>Filter be Month</h2>
