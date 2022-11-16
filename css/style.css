@@ -403,3 +403,12 @@ h2 {
 .timer {
   font-weight: 600;
 }
+
+.inline {
+  display: inline-grid;
+}
+
+.inline .form__btn--drop {
+  border: #666 solid 1px;
+  margin: -15px 10px;
+}

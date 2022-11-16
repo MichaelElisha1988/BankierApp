@@ -55,6 +55,8 @@ const initFirstData = async () => {
       userName: item.field_126,
       pin: item.field_125,
       owner: item.field_124,
+      amountName: item.field_133,
+      billsNum: item.field_134,
       movements: myMovemntsJson.items.map(item => item.field_128),
       movementsData: myMovemntsJson.items.map(item => {
         return {
@@ -64,6 +66,8 @@ const initFirstData = async () => {
           date: item.field_129,
           unique: item.id,
           owner: item.field_130,
+          amountName: item.field_133,
+          billsNum: item.field_134,
         };
       }),
     })
@@ -71,7 +75,15 @@ const initFirstData = async () => {
   console.log(accounts);
 };
 
-const updateDate = async (id, amount, date, cur, place) => {
+const updateDate = async (
+  id,
+  amount,
+  date,
+  cur,
+  place,
+  amountName,
+  billsNum
+) => {
   var myHeaders = new Headers();
   myHeaders.append('X-Tadabase-App-id', '4yQk2BBNgP');
   myHeaders.append('X-Tadabase-App-Key', 't5JcK3KU0HXt');
@@ -87,6 +99,8 @@ const updateDate = async (id, amount, date, cur, place) => {
   formdata.append('field_129', date);
   formdata.append('field_130', cur.owner);
   formdata.append('field_131', place);
+  formdata.append('field_133', amountName);
+  formdata.append('field_134', billsNum);
 
   var requestOptions = {
     method: 'POST',
@@ -134,6 +148,7 @@ const toDelete = async uniqueID => {
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
+const labelFutureBalance = document.querySelector('.balance__value__future');
 const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
@@ -147,6 +162,8 @@ const btnTransfer = document.querySelector('.form__btn--transfer');
 const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');
+const btnAddFutureBill = document.querySelector('.form__btn--future_bills');
+const btnDrop = document.querySelector('.form__btn--drop ');
 
 const inputLoginUsername = document.querySelector('.login__input--user');
 const inputLoginPin = document.querySelector('.login__input--pin');
@@ -155,6 +172,15 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+const inputFutureBillAmount = document.querySelector(
+  '.form__input--future_bills_amount'
+);
+const inputFutureBillName = document.querySelector(
+  '.form__input--future_bills_name'
+);
+const inputFutureBillsNumber = document.querySelector(
+  '.form__input--future_bills_number'
+);
 
 initFirstData();
 crateUserName(accounts);
@@ -199,13 +225,14 @@ const displayMovements = function (currentAccount, sort = false, filter = '0') {
 
 function addingRowsMovements(movementsData) {
   movementsData.forEach((mov, i) => {
-    const type = mov.amount > 0 ? 'deposit' : 'withdrawal';
+    if (mov.amountname === 'balance') {
+      const type = mov.amount > 0 ? 'deposit' : 'withdrawal';
 
-    const htmlMovementRow = `
+      const htmlMovementRow = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${mov.date} - ${
-      mov.owner
-    }</div>
+        mov.owner
+      }</div>
         <div class="movements__type movements__type--${type}">${mov.place}</div>
         <div class="movements__value">${mov.amount.toFixed(2)}₪ 
         <button class="form__btn form__btn--delete" value="${
@@ -215,7 +242,9 @@ function addingRowsMovements(movementsData) {
         </span></button>
       </div>
       `;
-    containerMovements.insertAdjacentHTML('afterbegin', htmlMovementRow);
+      containerMovements.insertAdjacentHTML('afterbegin', htmlMovementRow);
+    } else {
+    }
   });
 
   btnDelete = document.querySelectorAll('.form__btn--delete');
@@ -234,28 +263,37 @@ function addingRowsMovements(movementsData) {
 
       toDelete(this.value);
 
-      setTimeout(() => {
-        displayMovements(currentAccount);
-      }, 1000);
+      displayMovements(currentAccount);
     });
   });
 }
 
 function calcDisplayBalance(currentAccount) {
   labelBalance.textContent =
-    currentAccount.movements.reduce((acc, mov) => acc + mov, 0).toFixed(2) +
-    '₪';
+    currentAccount.movementsData
+      .filter(mov => mov.amount > 0 && mov.amountName === 'balance')
+      .reduce((acc, mov) => acc + mov.amount, 0)
+      .toFixed(2) + '₪';
+
+  labelFutureBalance.textContent =
+    currentAccount.movementsData
+      .filter(mov => mov.amount > 0 && mov.amountName === 'future')
+      .reduce((acc, mov) => acc + mov.amount, 0)
+      .toFixed(2) + '₪';
+
   currentAccount.balenceAmount = +labelBalance.textContent.slice(0, -1);
+
   calcDisplaySummary(currentAccount);
 }
 
 function calcDisplaySummary(currentAccount) {
-  const deposit = currentAccount.movements
-    .filter(mov => mov > 0)
-    .reduce((acc, mov) => acc + mov);
-  const withdrawal = currentAccount.movements
-    .filter(mov => mov < 0)
-    .reduce((acc, mov) => acc + mov);
+  console.log(currentAccount.movementsData);
+  const deposit = currentAccount.movementsData
+    .filter(mov => mov.amount > 0 && mov.amountName === 'balance')
+    .reduce((acc, mov) => acc + mov.amount, 0);
+  const withdrawal = currentAccount.movementsData
+    .filter(mov => mov.amount < 0 && mov.amountName === 'balance')
+    .reduce((acc, mov) => acc + mov.amount, 0);
 
   labelSumIn.textContent = deposit.toFixed(2) + '₪';
 
@@ -308,6 +346,8 @@ btnTransfer.addEventListener('click', function (e) {
     date: yourDate.toISOString().split('T')[0],
     owner: currentAccount.owner,
     place: place,
+    amountName: 'balance',
+    billsNum: 0,
   };
   if (amount > 0) {
     accounts.map(acc => acc.movements.push(amount));
@@ -317,11 +357,12 @@ btnTransfer.addEventListener('click', function (e) {
       amount,
       yourDate.toISOString().split('T')[0],
       currentAccount,
-      place
+      place,
+      'balance',
+      0
     );
-    setTimeout(() => {
-      displayMovements(currentAccount);
-    }, 1000);
+
+    displayMovements(currentAccount);
   } else {
     alert('Invalid Transfer');
   }
@@ -352,6 +393,8 @@ btnClose.addEventListener('click', function (e) {
     date: yourDate.toISOString().split('T')[0],
     owner: currentAccount.owner,
     place: place,
+    amountName: 'balance',
+    billsNum: 0,
   };
   if (amount < 0 && amountAfterTransfer > -20000) {
     accounts.map(acc => acc.movements.push(amount));
@@ -361,7 +404,9 @@ btnClose.addEventListener('click', function (e) {
       amount,
       yourDate.toISOString().split('T')[0],
       currentAccount,
-      place
+      place,
+      'balance',
+      0
     );
     setTimeout(() => {
       displayMovements(currentAccount);
@@ -391,6 +436,54 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
   e.preventDefault();
   displayMovements(currentAccount, sorted);
+});
+
+btnAddFutureBill.addEventListener('click', function (e) {
+  e.preventDefault();
+  let yourDate = new Date();
+  let indexNew = [...yourDate.toString()];
+
+  let uniqueId = indexNew
+    .map(letter => letter)
+    .filter(letter => +letter)
+    .reduce((cur, num) => (cur = cur + num));
+
+  const amount = +inputFutureBillAmount.value;
+  const place = inputFutureBillName.value;
+  const billsNum = inputFutureBillsNumber.value;
+
+  const newMoveData = {
+    id: uniqueId,
+    amount: amount,
+    date: yourDate.toISOString().split('T')[0],
+    owner: currentAccount.owner,
+    place: place,
+    amountName: 'future',
+    billsNum: billsNum,
+  };
+  if (amount > 0) {
+    accounts.map(acc => acc.movements.push(amount));
+    accounts.map(acc => acc.movementsData.push(newMoveData));
+    updateDate(
+      uniqueId,
+      amount,
+      yourDate.toISOString().split('T')[0],
+      currentAccount,
+      place,
+      'future',
+      billsNum
+    );
+    displayMovements(currentAccount);
+  } else {
+    alert('Invalid Transfer');
+  }
+  inputFutureBillAmount.value = '';
+  inputFutureBillName.value = '';
+  inputFutureBillsNumber.value = '';
+});
+
+btnDrop.addEventListener('click', function (e) {
+  e, preventDefault();
 });
 
 const currencies = new Map([
