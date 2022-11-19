@@ -1,24 +1,6 @@
 'use strict';
 
-const accounts = [
-  // {
-  //   Id: 8,
-  //   unique: 'item.id',
-  //   userName: 'me',
-  //   pin: 9999,
-  //   owner: 'Michael Elisha',
-  //   movements: [1, 2, 3],
-  //   movementsData: [
-  //     {
-  //       amount: 1,
-  //       place: 'item.field_131',
-  //       date: 'item.field_129',
-  //       unique: 'item.id',
-  //       owner: 'Michael Elisha',
-  //     },
-  //   ],
-  // },
-];
+const accounts = [];
 
 const initFirstData = async () => {
   const accountsResponse = await fetch(
@@ -47,31 +29,30 @@ const initFirstData = async () => {
   );
   const myAccountsJson = await accountsResponse.json(); //extract JSON from the http response
   const myMovemntsJson = await movemontsResponse.json(); //extract JSON from the http response
-
-  myAccountsJson.items.map(item =>
-    accounts.push({
-      number: item.field_123,
-      unique: item.id,
-      userName: item.field_126,
-      pin: item.field_125,
-      owner: item.field_124,
-      amountName: item.field_133,
-      billsNum: item.field_134,
-      movements: myMovemntsJson.items.map(item => item.field_128),
-      movementsData: myMovemntsJson.items.map(item => {
-        return {
-          number: item.field_127,
-          amount: item.field_128,
-          place: item.field_131,
-          date: item.field_129,
-          unique: item.id,
-          owner: item.field_130,
-          amountName: item.field_133,
-          billsNum: item.field_134,
-        };
-      }),
-    })
-  );
+  if (accounts.length === 0) {
+    myAccountsJson.items.map(item =>
+      accounts.push({
+        number: item.field_123,
+        unique: item.id,
+        userName: item.field_126,
+        pin: item.field_125,
+        owner: item.field_124,
+        movements: myMovemntsJson.items.map(item => item.field_128),
+        movementsData: myMovemntsJson.items.map(item => {
+          return {
+            id: item.field_127,
+            amount: item.field_128,
+            place: item.field_131,
+            date: item.field_129,
+            unique: item.id,
+            owner: item.field_130,
+            amountName: item.field_133,
+            billsNum: item.field_134,
+          };
+        }),
+      })
+    );
+  }
   console.log(accounts);
 };
 
@@ -111,6 +92,31 @@ const updateDate = async (
 
   fetch(
     'https://api.tadabase.io/api/v1/data-tables/X9EjVXNo2K/records',
+    requestOptions
+  )
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+};
+
+const updateField = async (id, billsNum) => {
+  var myHeaders = new Headers();
+  myHeaders.append('X-Tadabase-App-id', '4yQk2BBNgP');
+  myHeaders.append('X-Tadabase-App-Key', 't5JcK3KU0HXt');
+  myHeaders.append('X-Tadabase-App-Secret', 'y1yAri1CJn2MufPtTIybJebdBB0GwLEn');
+
+  var formdata = new FormData();
+  formdata.append('field_134', billsNum);
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: formdata,
+    redirect: 'follow',
+  };
+
+  fetch(
+    `https://api.tadabase.io/api/v1/data-tables/X9EjVXNo2K/records/${id}`,
     requestOptions
   )
     .then(response => response.text())
@@ -225,7 +231,7 @@ const displayMovements = function (currentAccount, sort = false, filter = '0') {
 
 function addingRowsMovements(movementsData) {
   movementsData.forEach((mov, i) => {
-    if (mov.amountname === 'balance') {
+    if (mov.amountName === 'balance') {
       const type = mov.amount > 0 ? 'deposit' : 'withdrawal';
 
       const htmlMovementRow = `
@@ -271,13 +277,13 @@ function addingRowsMovements(movementsData) {
 function calcDisplayBalance(currentAccount) {
   labelBalance.textContent =
     currentAccount.movementsData
-      .filter(mov => mov.amount > 0 && mov.amountName === 'balance')
+      .filter(mov => mov.amountName === 'balance')
       .reduce((acc, mov) => acc + mov.amount, 0)
       .toFixed(2) + '₪';
 
   labelFutureBalance.textContent =
     currentAccount.movementsData
-      .filter(mov => mov.amount > 0 && mov.amountName === 'future')
+      .filter(mov => mov.amountName === 'future')
       .reduce((acc, mov) => acc + mov.amount, 0)
       .toFixed(2) + '₪';
 
@@ -374,6 +380,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   let yourDate = new Date();
   let indexNew = [...yourDate.toString()];
+  let oneMoreForId = Math.floor(Math.random() * 100);
 
   let uniqueId = indexNew
     .map(letter => letter)
@@ -385,10 +392,9 @@ btnClose.addEventListener('click', function (e) {
   const amount =
     +inputClosePin.value < 0 ? +inputClosePin.value : -1 * +inputClosePin.value;
   const place = inputCloseUsername.value;
-  console.log();
   const amountAfterTransfer = currentAccount.balenceAmount - amount;
   const newMoveData = {
-    id: uniqueId,
+    id: uniqueId + oneMoreForId + '',
     amount: amount,
     date: yourDate.toISOString().split('T')[0],
     owner: currentAccount.owner,
@@ -399,8 +405,9 @@ btnClose.addEventListener('click', function (e) {
   if (amount < 0 && amountAfterTransfer > -20000) {
     accounts.map(acc => acc.movements.push(amount));
     accounts.map(acc => acc.movementsData.push(newMoveData));
+
     updateDate(
-      uniqueId,
+      uniqueId + oneMoreForId + '',
       amount,
       yourDate.toISOString().split('T')[0],
       currentAccount,
@@ -408,9 +415,8 @@ btnClose.addEventListener('click', function (e) {
       'balance',
       0
     );
-    setTimeout(() => {
-      displayMovements(currentAccount);
-    }, 3000);
+
+    displayMovements(currentAccount);
   } else {
     alert('Invalid Transfer');
   }
@@ -450,7 +456,7 @@ btnAddFutureBill.addEventListener('click', function (e) {
 
   const amount = +inputFutureBillAmount.value;
   const place = inputFutureBillName.value;
-  const billsNum = inputFutureBillsNumber.value;
+  const billsNum = +inputFutureBillsNumber.value;
 
   const newMoveData = {
     id: uniqueId,
@@ -483,7 +489,38 @@ btnAddFutureBill.addEventListener('click', function (e) {
 });
 
 btnDrop.addEventListener('click', function (e) {
-  e, preventDefault();
+  currentAccount.movementsData.map((mov, i) => {
+    if (mov.amountName === 'future') {
+      inputCloseUsername.value = mov.place;
+      inputClosePin.value = -mov.amount;
+      btnClose.click();
+
+      mov.billsNum--;
+
+      if (mov.billsNum === 0) {
+        currentAccount.movementsData.splice(i, 1);
+        currentAccount.movements.splice(i, 1);
+
+        i--;
+        toDelete(mov.unique);
+      } else {
+        const id = mov.id;
+        const amount = mov.amount;
+        const date = mov.date;
+        const owner = mov.owner;
+        const place = mov.place;
+        const amountName = mov.amountName;
+        const billsNum = mov.billsNum;
+
+        console.log(mov.unique, billsNum);
+
+        updateField(mov.unique, billsNum);
+
+        console.log(id, amount, date, owner, place, amountName, billsNum);
+      }
+    }
+  });
+  displayMovements(currentAccount);
 });
 
 const currencies = new Map([
